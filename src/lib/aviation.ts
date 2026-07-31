@@ -36,13 +36,19 @@ export interface Taf {
   }[]
 }
 
-const res = await fetch(
-  `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`
-)
+export async function fetchMetar(icao: string): Promise<Metar | null> {
+  const res = await fetch(
+    `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`
+  )
+
   if (!res.ok) throw new Error('METAR request failed')
+
   const data = await res.json()
+
   if (!Array.isArray(data) || data.length === 0) return null
+
   const m = data[0]
+
   return {
     icaoId: m.icaoId,
     rawOb: m.rawOb,
@@ -55,11 +61,15 @@ const res = await fetch(
     visib: m.visib ?? null,
     altim: m.altim ?? null,
     wxString: m.wxString ?? null,
-    clouds: (m.clouds ?? []).map((c: any) => ({ cover: c.cover, base: c.base ?? null })),
+    clouds: (m.clouds ?? []).map((c: any) => ({
+      cover: c.cover,
+      base: c.base ?? null
+    })),
     fltCat: (m.fltCat as FlightCategory) ?? 'UNKNOWN',
     elevationM: m.elev ?? null,
   }
 }
+
 
 export async function fetchTaf(icao: string): Promise<Taf | null> {
   const res = await fetch(
