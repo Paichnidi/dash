@@ -108,22 +108,18 @@ export function windComponents(runwayHeadingDeg: number, windDirDeg: number, win
   return { headwind, crosswind, crosswindDirection }
 }
 
-export function densityAltitudeFromMetar(metar: Metar) {
-  const elevationFt = (metar.elevationM ?? 0) * 3.28084
-  const altimeterInHg = (metar.altim ?? 1013) / 33.8639
-  const oatC = metar.temp ?? 15
-
-  const pressureAltitude =
-    elevationFt + (29.92 - altimeterInHg) * 1000
-
+export function densityAltitude(
+  elevationFt: number,
+  altimeterInHg: number,
+  oatC: number
+) {
+  const pressureAltitude = elevationFt + (29.92 - altimeterInHg) * 1000
   const isaTemp = 15 - (elevationFt / 1000) * 2
-
-  const densityAlt =
-    pressureAltitude + 120 * (oatC - isaTemp)
+  const densityAlt = pressureAltitude + 120 * (oatC - isaTemp)
 
   return {
     pressureAltitude: Math.round(pressureAltitude),
-    densityAltitude: Math.round(densityAlt),
+    densityAltitude: Math.round(densityAlt)
   }
 }
 
