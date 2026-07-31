@@ -36,12 +36,13 @@ export interface Taf {
   }[]
 }
 
-export async function fetchMetar(icao: string): Promise<Metar | null> {
-  const res = await fetch(
-    `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json, {
-    mode: 'cors', 
-    credentials: 'include'}
-  )
+const res = await fetch(
+  `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`,
+  {
+    mode: 'cors',
+    credentials: 'include',
+  }
+)
   if (!res.ok) throw new Error('METAR request failed')
   const data = await res.json()
   if (!Array.isArray(data) || data.length === 0) return null
