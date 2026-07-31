@@ -123,6 +123,21 @@ export function densityAltitude(
   }
 }
 
+export function densityAltitudeFromMetar(metar: Metar) {
+  const elevationFt = (metar.elevationM ?? 0) * 3.28084
+
+  // AviationWeather API gives altim in hPa, convert to inHg
+  const altimeterInHg = (metar.altim ?? 1013.25) / 33.8639
+
+  const oatC = metar.temp ?? 15
+
+  return densityAltitude(
+    elevationFt,
+    altimeterInHg,
+    oatC
+  )
+}
+
 export const FLIGHT_CATEGORY_COLOR: Record<FlightCategory, string> = {
   VFR: 'var(--color-vfr)',
   MVFR: 'var(--color-mvfr)',

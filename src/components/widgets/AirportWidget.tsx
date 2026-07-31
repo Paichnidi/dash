@@ -3,7 +3,16 @@ import { WidgetCard } from '../WidgetCard'
 import { ExpandedModal } from '../ExpandedModal'
 import { Skeleton } from '../Skeleton'
 import { useSettings } from '../../lib/settings'
-import { fetchMetar, fetchTaf, windComponents, densityAltitude, FLIGHT_CATEGORY_COLOR, type Metar, type Taf } from '../../lib/aviation'
+import {
+  fetchMetar,
+  fetchTaf,
+  windComponents,
+  densityAltitudeFromMetar,
+  FLIGHT_CATEGORY_COLOR,
+  type Metar,
+  type Taf
+} from '../../lib/aviation'
+
 import { AlertTriangle, Navigation } from 'lucide-react'
 
 export function AirportWidget({ dragHandleProps, isDragging }: { dragHandleProps?: any; isDragging?: boolean }) {
@@ -32,9 +41,7 @@ export function AirportWidget({ dragHandleProps, isDragging }: { dragHandleProps
     ? windComponents(runway, metar.wdir, metar.wspd)
     : null
 
-  const da = metar && metar.altim != null && metar.temp != null && metar.elevationM != null
-    ? densityAltitude(metar.elevationM * 3.281, metar.altim, metar.temp)
-    : null
+  const da = metar ? densityAltitudeFromMetar(metar) : null
 
   return (
     <>
@@ -96,7 +103,9 @@ export function AirportWidget({ dragHandleProps, isDragging }: { dragHandleProps
               </div>
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-wider text-muted dark:text-muted-dark">Altimeter</div>
-                <div className="mt-0.5">{metar.altim ?? '—'} inHg</div>
+                <div className="mt-0.5">
+                  {metar.altim ? (metar.altim / 33.8639).toFixed(2) : '—'} inHg
+                </div>
               </div>
             </div>
 
