@@ -26,6 +26,13 @@ function textValue(v: unknown): string | undefined {
     return String(v)
 }
 
+function calendarDisplayName(v: unknown): string {
+    if (v == null) return ''
+    if (typeof v === 'string') return v
+    if (typeof v === 'object') return JSON.stringify(v)
+    return String(v)
+}
+
 export default async (_req: Request, _context: Context) => {
     const serverUrl = process.env.CALDAV_URL
     const username = process.env.CALDAV_USERNAME
@@ -49,6 +56,21 @@ export default async (_req: Request, _context: Context) => {
 
         const calendars = await client.fetchCalendars()
 
+        const wantedName = process.env.CALDAV_CALENDAR_NAME?.trim().toLowerCase()
+        const selectedCalendars = wantedName
+            ? calendars.filter((c) => calendarDisplayName(c.displayName).toLowerCase().includes(wantedName))
+            : calendars
+
+        if (wantedName && selectedCalendars.length === 0) {
+            return new Response(
+                JSON.stringify({
+                    error: `No calendar matching "${process.env.CALDAV_CALENDAR_NAME}" was found.`,
+                    availableCalendars: calendars.map((c) => calendarDisplayName(c.displayName)),
+                }),
+                { status: 404, headers: { 'content-type': 'application/json' } }
+            )
+        }
+
         const now = new Date()
         const rangeStart = new Date(now)
         rangeStart.setDate(rangeStart.getDate() - 7)
@@ -57,7 +79,7 @@ export default async (_req: Request, _context: Context) => {
 
         const events: SyncedEvent[] = []
 
-        for (const calendar of calendars) {
+        for (const calendar of selectedCalendars) {
             const objects = await client.fetchCalendarObjects({
                 calendar,
                 timeRange: { start: rangeStart.toISOString(), end: rangeEnd.toISOString() },
