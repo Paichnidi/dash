@@ -30,6 +30,8 @@ export interface Task {
 export interface CalendarEvent {
   id: string
   title: string
+  source?: 'local' | 'caldav'
+  allDay?: boolean
   date: string // ISO date (yyyy-mm-dd)
   time?: string // HH:MM
   location?: string
