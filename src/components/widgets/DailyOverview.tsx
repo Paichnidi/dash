@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { WidgetCard } from '../WidgetCard'
 import { useSettings } from '../../lib/settings'
-import { useTasks, useEvents } from '../../lib/data'
+import { useTasks, useMergedEvents } from '../../lib/data'
 import { Sparkles } from 'lucide-react'
 
 function greeting(hour: number) {
@@ -21,7 +21,7 @@ function minutesUntil(dateISO: string, time?: string) {
 export function DailyOverviewWidget({ dragHandleProps, isDragging }: { dragHandleProps?: any; isDragging?: boolean }) {
   const { settings } = useSettings()
   const [tasks] = useTasks()
-  const [events] = useEvents()
+  const { events } = useMergedEvents()
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {

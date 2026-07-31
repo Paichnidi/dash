@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useCaldavEvents } from './caldav'
 import { useLocalState, uid } from './storage'
 import type {
   Task, CalendarEvent, ClassEntry, Assignment, FlightProgress, QuickLink,
@@ -53,6 +55,26 @@ export function useTasks() {
 
 export function useEvents() {
   return useLocalState<CalendarEvent[]>('hub.events.v1', SEED_EVENTS)
+}
+
+/**
+ * Combines locally-created events (editable) with events synced from CalDAV
+ * (read-only, refreshed periodically). Synced events carry `source: 'caldav'`
+ * and a `caldav:`-prefixed id so they never collide with local ids.
+ */
+export function useMergedEvents() {
+  const [localEvents, setLocalEvents] = useEvents()
+  const { events: caldavEvents, status: caldavStatus } = useCaldavEvents()
+
+  const merged = useMemo(
+    () =>
+      [...localEvents, ...caldavEvents].sort((a, b) =>
+        (a.date + (a.time ?? '')).localeCompare(b.date + (b.time ?? ''))
+      ),
+    [localEvents, caldavEvents]
+  )
+
+  return { events: merged, setLocalEvents, caldavStatus }
 }
 
 export function useClasses() {

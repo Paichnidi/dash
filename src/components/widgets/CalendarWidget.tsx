@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { WidgetCard } from '../WidgetCard'
 import { ExpandedModal } from '../ExpandedModal'
-import { useEvents } from '../../lib/data'
+import { useMergedEvents } from '../../lib/data'
 import { uid } from '../../lib/storage'
-import { Plus, Trash2, Plane, GraduationCap, FileWarning, User } from 'lucide-react'
+import { Plus, Trash2, Plane, GraduationCap, FileWarning, User, RefreshCw, CloudOff } from 'lucide-react'
 import type { CalendarEvent } from '../../types'
 
 const TYPE_ICON: Record<CalendarEvent['type'], any> = {
@@ -18,7 +18,7 @@ function todayISO() {
 }
 
 export function CalendarWidget({ dragHandleProps, isDragging }: { dragHandleProps?: any; isDragging?: boolean }) {
-  const [events, setEvents] = useEvents()
+  const { events, setLocalEvents, caldavStatus } = useMergedEvents()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ title: '', date: todayISO(), time: '', type: 'personal' as CalendarEvent['type'] })
 
@@ -27,14 +27,17 @@ export function CalendarWidget({ dragHandleProps, isDragging }: { dragHandleProp
   const upcoming = events
     .filter((e) => e.date >= today)
     .sort((a, b) => (a.date + (a.time ?? '')).localeCompare(b.date + (b.time ?? '')))
-    .slice(0, 8)
+    .slice(0, 12)
 
   const add = () => {
     if (!form.title.trim()) return
-    setEvents((prev) => [...prev, { id: uid(), title: form.title.trim(), date: form.date, time: form.time || undefined, type: form.type }])
+    setLocalEvents((prev) => [
+      ...prev,
+      { id: uid(), title: form.title.trim(), date: form.date, time: form.time || undefined, type: form.type, source: 'local' },
+    ])
     setForm({ title: '', date: todayISO(), time: '', type: 'personal' })
   }
-  const remove = (id: string) => setEvents((prev) => prev.filter((e) => e.id !== id))
+  const remove = (id: string) => setLocalEvents((prev) => prev.filter((e) => e.id !== id))
 
   return (
     <>
@@ -51,6 +54,24 @@ export function CalendarWidget({ dragHandleProps, isDragging }: { dragHandleProp
       </WidgetCard>
 
       <ExpandedModal open={open} onClose={() => setOpen(false)} title="Calendar" tag="Upcoming">
+        <div className="flex items-center gap-1.5 mb-3 text-[11px] text-muted dark:text-muted-dark">
+          {caldavStatus === 'ok' && (
+            <>
+              <RefreshCw size={11} />
+              <span>Synced with CalDAV</span>
+            </>
+          )}
+          {caldavStatus === 'error' && (
+            <>
+              <CloudOff size={11} />
+              <span>CalDAV sync unavailable — showing local events only</span>
+            </>
+          )}
+          {caldavStatus === 'unconfigured' && (
+            <span>CalDAV not configured — add CALDAV_URL / CALDAV_USERNAME / CALDAV_PASSWORD in Netlify to sync</span>
+          )}
+        </div>
+
         <div className="space-y-2 mb-4">
           <input
             value={form.title}
@@ -90,18 +111,24 @@ export function CalendarWidget({ dragHandleProps, isDragging }: { dragHandleProp
         <div className="divide-y divide-hairline dark:divide-hairline-dark">
           {upcoming.map((e) => {
             const Icon = TYPE_ICON[e.type]
+            const isSynced = e.source === 'caldav'
             return (
               <div key={e.id} className="flex items-center gap-3 py-2.5 group">
                 <Icon size={15} className="text-muted dark:text-muted-dark shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm truncate">{e.title}</div>
+                  <div className="text-sm truncate flex items-center gap-1.5">
+                    {e.title}
+                    {isSynced && <span className="text-[9px] font-mono uppercase tracking-wide text-muted dark:text-muted-dark border border-hairline dark:border-hairline-dark rounded px-1">synced</span>}
+                  </div>
                   <div className="text-[11px] text-muted dark:text-muted-dark">
                     {e.date === today ? 'Today' : e.date}{e.time ? ` · ${e.time}` : ''}{e.location ? ` · ${e.location}` : ''}
                   </div>
                 </div>
-                <button onClick={() => remove(e.id)} className="opacity-0 group-hover:opacity-100 transition-opacity text-muted dark:text-muted-dark p-1">
-                  <Trash2 size={13} />
-                </button>
+                {!isSynced && (
+                  <button onClick={() => remove(e.id)} className="opacity-0 group-hover:opacity-100 transition-opacity text-muted dark:text-muted-dark p-1">
+                    <Trash2 size={13} />
+                  </button>
+                )}
               </div>
             )
           })}
