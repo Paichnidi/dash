@@ -37,11 +37,7 @@ export interface Taf {
 }
 
 const res = await fetch(
-  `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`,
-  {
-    mode: 'cors',
-    credentials: 'include',
-  }
+  `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`
 )
   if (!res.ok) throw new Error('METAR request failed')
   const data = await res.json()
