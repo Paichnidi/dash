@@ -18,8 +18,7 @@ const SEED_TASKS: Task[] = [
 ]
 
 const SEED_EVENTS: CalendarEvent[] = [
-  { id: uid(), title: 'Flight lesson', date: todayISO(), time: '08:00', location: 'KHQU', type: 'flight' },
-  { id: uid(), title: 'Math 1030', date: todayISO(), time: '10:30', location: 'Room 118', type: 'class' },
+  
 ]
 
 const SEED_CLASSES: ClassEntry[] = [
