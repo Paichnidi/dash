@@ -38,7 +38,7 @@ export interface Taf {
 
 export async function fetchMetar(icao: string): Promise<Metar | null> {
   const res = await fetch(
-    `https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao)}&format=json`
+    `/.netlify/functions/aviation?type=metar&icao=${icao}`
   )
 
   if (!res.ok) throw new Error('METAR request failed')
@@ -73,7 +73,7 @@ export async function fetchMetar(icao: string): Promise<Metar | null> {
 
 export async function fetchTaf(icao: string): Promise<Taf | null> {
   const res = await fetch(
-    `https://aviationweather.gov/api/data/taf?ids=${encodeURIComponent(icao)}&format=json`
+    `/.netlify/functions/aviation?type=taf&icao=${icao}`
   )
   if (!res.ok) throw new Error('TAF request failed')
   const data = await res.json()
