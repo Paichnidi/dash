@@ -4,6 +4,7 @@ import { useLocalState, uid } from './storage'
 import type {
   Task, CalendarEvent, ClassEntry, Assignment, FlightProgress, QuickLink,
 } from '../types'
+import { textPath } from 'framer-motion/client'
 
 function todayISO(offsetDays = 0) {
   const d = new Date()
@@ -12,9 +13,6 @@ function todayISO(offsetDays = 0) {
 }
 
 const SEED_TASKS: Task[] = [
-  { id: uid(), title: 'Study weather theory', category: 'Aviation', priority: 'high', dueDate: todayISO(), done: false, createdAt: todayISO() },
-  { id: uid(), title: 'Finish problem set 4', category: 'School', priority: 'medium', dueDate: todayISO(1), done: false, createdAt: todayISO() },
-  { id: uid(), title: 'Laundry', category: 'Personal', priority: 'low', done: true, createdAt: todayISO() },
 ]
 
 const SEED_EVENTS: CalendarEvent[] = [
@@ -22,22 +20,24 @@ const SEED_EVENTS: CalendarEvent[] = [
 ]
 
 const SEED_CLASSES: ClassEntry[] = [
-  { id: uid(), name: 'Aviation Meteorology', days: ['Mon', 'Wed', 'Fri'], time: '10:30 AM', room: '204' },
-  { id: uid(), name: 'Calculus II', days: ['Tue', 'Thu'], time: '9:00 AM', room: '118' },
+  { id: uid(), name: 'Human Communications', days: ['Tue', 'Thu'], time: '11:00 AM', room: 'Russel 310' },
+  { id: uid(), name: 'Elementary Statistics', days: ['Tue', 'Thu'], time: '2:00 PM', room: 'Memori 138' },
+  { id: uid(), name: 'Instrument Pilot Ground', days: ['Mon', 'Wed'], time: '9:30 AM', room: 'GA_FLI 2012' },
+  { id: uid(), name: 'Aviation Meteorology', days: ['Mon', 'Wed'], time: '11:00 AM', room: 'Eastman' },
+  { id: uid(), name: 'Aviation Regulation', days: ['online'], time: '2:00 PM', room: '' },
 ]
 
 const SEED_ASSIGNMENTS: Assignment[] = [
-  { id: uid(), title: 'Weather brief write-up', course: 'Aviation Meteorology', dueDate: todayISO(1), done: false },
 ]
 
 const SEED_FLIGHT: FlightProgress = {
   totalHours: 67.4,
   certificates: [
     { id: uid(), name: 'Private Pilot', progressHours: 61, goalHours: 40, complete: true },
-    { id: uid(), name: 'Commercial', progressHours: 120, goalHours: 250, complete: false },
+    { id: uid(), name: 'Commercial', progressHours: 67.4, goalHours: 250, complete: false },
   ],
   currency: {},
-  goals: ['Solo cross-country', 'Complex endorsement'],
+  goals: ['Instrument Rating', 'Commercial Pilot', 'CFI'],
 }
 
 const SEED_LINKS: QuickLink[] = [
