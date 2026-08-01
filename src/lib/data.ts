@@ -4,13 +4,7 @@ import { useLocalState, uid } from './storage'
 import type {
   Task, CalendarEvent, ClassEntry, Assignment, FlightProgress, QuickLink,
 } from '../types'
-import { textPath } from 'framer-motion/client'
 
-function todayISO(offsetDays = 0) {
-  const d = new Date()
-  d.setDate(d.getDate() + offsetDays)
-  return d.toISOString().slice(0, 10)
-}
 
 const SEED_TASKS: Task[] = [
 ]
