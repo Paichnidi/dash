@@ -19,6 +19,8 @@ const SEED_CLASSES: ClassEntry[] = [
   { id: uid(), name: 'Instrument Pilot Ground', days: ['Mon', 'Wed'], time: '9:30 AM', room: 'GA_FLI 2012' },
   { id: uid(), name: 'Aviation Meteorology', days: ['Mon', 'Wed'], time: '11:00 AM', room: 'Eastman' },
   { id: uid(), name: 'Aviation Regulation', days: ['online'], time: '2:00 PM', room: '' },
+  { id: uid(), name: 'Testing', days: ['Sat'], time: '2:00 PM', room: '' },
+
 ]
 
 const SEED_ASSIGNMENTS: Assignment[] = [
