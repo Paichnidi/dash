@@ -16,4 +16,5 @@ export const WIDGET_COMPONENTS: Record<WidgetId, React.ComponentType<{ dragHandl
   tasks: TasksWidget,
   flight: FlightProgressWidget,
   school: SchoolWidget,
+  launch: QuickLaunchWidget,
 }

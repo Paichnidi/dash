@@ -3,6 +3,7 @@ import { SettingsProvider, useSettings } from './lib/settings'
 import { WidgetGrid } from './components/WidgetGrid'
 import { SettingsPanel } from './components/SettingsPanel'
 import { Settings, Sun, Moon } from 'lucide-react'
+import { useTaskInbox } from './lib/inbox'
 
 function Header({ onOpenSettings }: { onOpenSettings: () => void }) {
   const { settings, setSettings } = useSettings()
@@ -41,6 +42,8 @@ function Header({ onOpenSettings }: { onOpenSettings: () => void }) {
 
 function DashboardShell() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  useTaskInbox()
+
 
   return (
     <div className="min-h-screen px-4 py-5 sm:px-8 sm:py-8 max-w-5xl mx-auto">
