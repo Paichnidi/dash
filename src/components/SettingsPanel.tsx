@@ -64,11 +64,10 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               <button
                 key={t}
                 onClick={() => setSettings((s) => ({ ...s, theme: t }))}
-                className={`flex-1 rounded-lg py-2 text-sm capitalize border transition-colors ${
-                  settings.theme === t
+                className={`flex-1 rounded-lg py-2 text-sm capitalize border transition-colors ${settings.theme === t
                     ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
                     : 'border-hairline dark:border-hairline-dark text-muted dark:text-muted-dark'
-                }`}
+                  }`}
               >
                 {t}
               </button>
@@ -113,12 +112,6 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
           </div>
         </div>
 
-        <button
-          onClick={resetSettings}
-          className="flex items-center gap-1.5 text-sm text-muted dark:text-muted-dark hover:text-ink dark:hover:text-ink-dark"
-        >
-          <RotateCcw size={13} /> Reset to defaults
-        </button>
         <div className="flex items-center gap-1.5 text-[11px] text-muted dark:text-muted-dark">
           {syncStatus === 'synced' && (
             <>
@@ -134,6 +127,16 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
             </>
           )}
         </div>
+
+        <button
+          onClick={resetSettings}
+          className="flex items-center gap-1.5 text-sm text-muted dark:text-muted-dark hover:text-ink dark:hover:text-ink-dark"
+        >
+          <RotateCcw size={13} /> Reset to defaults
+        </button>
+        <p className="text-[11px] text-muted dark:text-muted-dark leading-relaxed border-t border-hairline dark:border-hairline-dark pt-3">
+          Default location: {DEFAULT_SETTINGS.homeLabel}. Settings sync automatically across your devices when configured; otherwise they stay local to this browser.
+        </p>
       </div>
     </ExpandedModal>
   )
