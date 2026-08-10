@@ -5,7 +5,7 @@ import { RotateCcw } from 'lucide-react'
 const ACCENTS = ['#4C7FE0', '#2FAE6E', '#D9A03E', '#B44FD1', '#E0654C', '#4FADBF']
 
 export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { settings, setSettings, resetSettings } = useSettings()
+  const { settings, setSettings, resetSettings, syncStatus } = useSettings()
 
   return (
     <ExpandedModal open={open} onClose={onClose} title="Settings" tag="Personalization">
@@ -119,9 +119,21 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
         >
           <RotateCcw size={13} /> Reset to defaults
         </button>
-        <p className="text-[11px] text-muted dark:text-muted-dark leading-relaxed border-t border-hairline dark:border-hairline-dark pt-3">
-          Default location: {DEFAULT_SETTINGS.homeLabel}. All data stays on this device (browser local storage) — nothing is sent to a server.
-        </p>
+        <div className="flex items-center gap-1.5 text-[11px] text-muted dark:text-muted-dark">
+          {syncStatus === 'synced' && (
+            <>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-vfr)' }} />
+              <span>Synced across devices</span>
+            </>
+          )}
+          {syncStatus === 'unconfigured' && <span>Cross-device sync not configured — settings stay on this device only</span>}
+          {syncStatus === 'error' && (
+            <>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-ifr)' }} />
+              <span>Sync unavailable — using local settings</span>
+            </>
+          )}
+        </div>
       </div>
     </ExpandedModal>
   )
